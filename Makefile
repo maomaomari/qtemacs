@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -std=c2x
 
-SRC = utils.c term.c qtemacs.c
+SRC = input.c output.c term.c qtemacs.c
 OBJ = ${SRC:.c=.o}
 
 

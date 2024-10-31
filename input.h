@@ -3,4 +3,6 @@
 
 #define CTRL_KEY(c) (c & 0x1f)
 
+void editorProcessKey(void);
+
 #endif
