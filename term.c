@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
+#include <ctype.h>
 
 struct editorConfig E;
 
@@ -50,11 +51,36 @@ void die(char *s){
 
 int getWindowSize(int *row, int *col){
 	struct winsize w;
-	if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == -1 || w.ws_col == 0 || w.ws_row == 0)
-		return -1;
-	else{
+	if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == -1 || w.ws_col == 0){
+		if(write(STDOUT_FILENO,"\x1b[999C\x1b[999B", 12) != 12)
+			return -1;
+		return getCursorPosition(row, col);
+	} else {
 		*col = w.ws_col;
 		*row = w.ws_row;
 		return 0;
 	}
+}
+
+int getCursorPosition(int *row, int *col){
+	char buf[32];
+	unsigned int i = 0;
+	
+	if(write(STDOUT_FILENO, "\x1b[6n", 4) != 4) return -1;
+
+	while(i < sizeof(buf) - 1){
+		if(read(STDOUT_FILENO, &buf[i], 1) != 1)
+			break;
+		if(buf[i] == 'R')
+			break;
+		i++;
+	}
+	buf[i] = '\0';
+
+	if(buf[0] != '\x1b' || buf[1] != '[')
+		return -1;
+	if(sscanf(&buf[2], "%d;%d", row, col) != 2)
+		return -1;
+
+	return 0;
 }

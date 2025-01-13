@@ -6,7 +6,7 @@ void disableRawMode(void);
 char editorReadKey(void);
 
 int getWindowSize(int*, int*);
-
+int getCursorPosition(int *, int*);
 void die(char *);
 
 #endif

@@ -1,7 +1,8 @@
 CC = gcc
 CFLAGS = -std=c2x
 
-SRC = input.c output.c term.c qtemacs.c
+#SRC = buffer.c input.c output.c term.c qtemacs.c
+SRC = $(wildcard *.c)
 OBJ = ${SRC:.c=.o}
 
 
